@@ -1,0 +1,195 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Smart Inventory</title>
+  <style>
+    body {
+      background-color: #000;
+      color: #fff;
+      font-family: Arial, sans-serif;
+      margin: 0;
+      padding: 0;
+      text-align: center;
+    }
+    h1 {
+      margin-top: 20%;
+      font-size: 3em;
+    }
+    .button {
+      background-color: #444;
+      border: none;
+      color: #fff;
+      padding: 15px 30px;
+      font-size: 1.2em;
+      cursor: pointer;
+      margin-top: 20px;
+      transition: background-color 0.3s ease;
+    }
+    .button:hover {
+      background-color: #555;
+    }
+    .team-names, .next-page, .back-page {
+      display: none;
+      margin-top: 20px;
+      font-size: 1.5em;
+    }
+    .page {
+      display: none;
+    }
+    .page.active {
+      display: block;
+    }
+    /* Chatbot styles */
+    .chat-container {
+      background-color: #333;
+      padding: 20px;
+      width: 80%;
+      margin: 20px auto;
+      border-radius: 8px;
+      height: 400px;
+      display: flex;
+      flex-direction: column;
+      justify-content: flex-end;
+    }
+    .chat-box {
+      background-color: #444;
+      color: white;
+      padding: 15px;
+      border-radius: 8px;
+      margin-bottom: 20px;
+      overflow-y: auto;
+      max-height: 200px;
+    }
+    .input-box {
+      background-color: #555;
+      color: white;
+      padding: 10px;
+      border-radius: 8px;
+      border: none;
+      width: 100%;
+    }
+    .input-box:focus {
+      outline: none;
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Page 1 -->
+  <div class="page active" id="page1">
+    <h1>Smart Inventory</h1>
+    <button class="button" onclick="showTeam()">Team Trekker</button>
+    <div class="team-names" id="teamNames">
+      <p>Aditya Upadhyay</p>
+      <p>Abhinav Gupta</p>
+      <p>Shriya Ahuja</p>
+      <p>Krish Shrivastava</p>
+    </div>
+    <button class="button" onclick="goToNextPage()">Next</button>
+  </div>
+
+  <!-- Page 2 -->
+  <div class="page" id="page2">
+    <h1>Select Business Field</h1>
+    <button class="button" onclick="selectField('Medicine')">Medicine</button>
+    <button class="button" onclick="selectField('Clothes')">Clothes</button>
+    <button class="button" onclick="selectField('Groceries')">Groceries</button>
+    <button class="button" onclick="selectField('Other')">Other</button>
+    <button class="button" onclick="goToPreviousPage()">Back</button>
+    <button class="button" onclick="goToNextPage()">Next</button>
+  </div>
+
+  <!-- Page 3 -->
+  <div class="page" id="page3">
+    <h1>Select Template</h1>
+    <button class="button">Product Name</button>
+    <button class="button">Price</button>
+    <button class="button">Quantity</button>
+    <button class="button">Date of Purchase</button>
+    <button class="button">Expiry Date</button>
+    <button class="button" onclick="goToPreviousPage()">Back</button>
+    <button class="button" onclick="goToNextPage()">Next</button>
+  </div>
+
+  <!-- Page 4 (with chatbot) -->
+  <div class="page" id="page4">
+    <h1>Welcome to Your Smart Inventory</h1>
+
+    <!-- Chatbot -->
+    <div class="chat-container">
+      <div class="chat-box" id="chatBox">
+        <p>Chatbot: Hello! How can I assist you today?</p>
+      </div>
+      <input type="text" id="userMessage" class="input-box" placeholder="Ask something..." onkeypress="checkEnter(event)">
+    </div>
+
+    <button class="button" onclick="goToPreviousPage()">Back</button>
+  </div>
+
+  <script>
+    let currentPage = 1;
+
+    // Show team members
+    function showTeam() {
+      document.getElementById("teamNames").style.display = "block";
+    }
+
+    // Navigate to next page
+    function goToNextPage() {
+      document.getElementById(`page${currentPage}`).classList.remove("active");
+      currentPage++;
+      document.getElementById(`page${currentPage}`).classList.add("active");
+    }
+
+    // Navigate to previous page
+    function goToPreviousPage() {
+      document.getElementById(`page${currentPage}`).classList.remove("active");
+      currentPage--;
+      document.getElementById(`page${currentPage}`).classList.add("active");
+    }
+
+    // Select business field
+    function selectField(field) {
+      alert(`You selected: ${field}`);
+    }
+
+    // Check for Enter key press and respond
+    function checkEnter(event) {
+      if (event.key === 'Enter') {
+        let userMessage = document.getElementById("userMessage").value;
+        if (userMessage.trim() !== "") {
+          appendMessage(userMessage, "You");
+          getChatbotResponse(userMessage);
+        }
+      }
+    }
+
+    // Append user message to chatbox
+    function appendMessage(message, sender) {
+      let chatBox = document.getElementById("chatBox");
+      chatBox.innerHTML += `<p><strong>${sender}:</strong> ${message}</p>`;
+      document.getElementById("userMessage").value = "";
+      chatBox.scrollTop = chatBox.scrollHeight; // Scroll to the bottom
+    }
+
+    // Simple chatbot response
+    function getChatbotResponse(message) {
+      let response = "I'm not sure how to answer that right now.";
+      if (message.toLowerCase().includes("stock")) {
+        response = "Your stock levels are good, no need to purchase more items.";
+      } else if (message.toLowerCase().includes("purchase")) {
+        response = "You need to purchase more stock for the following items: Product X, Product Y.";
+      } else if (message.toLowerCase().includes("payment")) {
+        response = "You have a pending payment of $150 for Product Z.";
+      }
+
+      setTimeout(() => {
+        appendMessage(response, "Chatbot");
+      }, 1000);
+    }
+  </script>
+
+</body>
+</html>
